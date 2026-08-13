@@ -1,0 +1,646 @@
+/* ==========================================================================
+   Sāndhya — cinematic village experience
+   Palette:
+     --night      #12141c   deep indigo dusk (overlay base)
+     --ember      #C98A3E   brass / lamp-flame amber (primary accent)
+     --terracotta #B5573C   clay red (secondary accent, used sparingly)
+     --ivory      #F3E9D6   warm parchment text
+     --smoke      #9c9284   muted secondary text
+   Type:
+     Display  — 'Yatra One'            (headline, one-of-a-kind, village-sign character)
+     Voice    — 'Cormorant Garamond'   (eyebrow / italic sub, quiet elegance)
+     Utility  — 'Assistant'            (UI chrome, controls, body)
+   ========================================================================== */
+
+:root {
+  --night: #12141c;
+  --night-soft: rgba(18, 20, 28, 0.55);
+  --ember: #c98a3e;
+  --ember-bright: #f0b667;
+  --terracotta: #b5573c;
+  --ivory: #f3e9d6;
+  --smoke: #b9b0a0;
+
+  --music-vol: 0.7;
+  --ambient-vol: 0.22;
+
+  --glass-bg: rgba(20, 18, 16, 0.38);
+  --glass-border: rgba(243, 233, 214, 0.14);
+  --radius-lg: 20px;
+  --radius-md: 14px;
+  --radius-sm: 10px;
+
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: 'Assistant', sans-serif;
+  color: var(--ivory);
+  background: var(--night);
+  min-height: 100vh;
+  min-height: 100dvh;
+  overscroll-behavior: none;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* focus visibility everywhere */
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--ember-bright);
+  outline-offset: 3px;
+}
+
+/* ============ BACKGROUND ============ */
+
+#bg-layer {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  background-image: url('/images/01.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+  animation: slow-drift 42s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@media (max-width: 767px) {
+  #bg-layer {
+    background-image: url('/images/02.png');
+  }
+}
+
+@keyframes slow-drift {
+  from { transform: scale(1.0); }
+  to   { transform: scale(1.05); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #bg-layer { animation: none; }
+}
+
+#vignette {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0) 45%, rgba(0,0,0,0.55) 100%),
+    linear-gradient(to bottom, rgba(10,8,6,0.35) 0%, rgba(10,8,6,0) 22%, rgba(10,8,6,0) 68%, rgba(10,8,6,0.55) 100%);
+}
+
+#grain {
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.045;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ============ ENTRY OVERLAY ============ */
+
+#entry-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  background: rgba(8, 7, 6, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: opacity 1.1s ease, visibility 1.1s ease;
+}
+
+#entry-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.entry-content {
+  max-width: 480px;
+}
+
+.entry-eyebrow {
+  font-family: 'Cormorant Garamond', serif;
+  font-style: italic;
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  color: var(--smoke);
+  margin: 0 0 6px;
+}
+
+.entry-content h1 {
+  font-family: 'Yatra One', cursive;
+  font-weight: 400;
+  font-size: clamp(2.6rem, 9vw, 4.6rem);
+  margin: 0;
+  color: var(--ivory);
+  text-shadow: 0 0 34px rgba(201, 138, 62, 0.35);
+  letter-spacing: 0.01em;
+}
+
+.entry-sub {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.15rem;
+  color: var(--smoke);
+  margin: 10px 0 40px;
+}
+
+.entry-hint {
+  margin-top: 22px;
+  font-size: 0.82rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--smoke);
+  opacity: 0.75;
+}
+
+/* Signature element: the diya (oil lamp) — a living flame in place of a button */
+.diya-button {
+  appearance: none;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  width: 96px;
+  height: 130px;
+  position: relative;
+  margin: 0 auto;
+  display: block;
+}
+
+.diya-flame {
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 42px;
+}
+
+.flame-core {
+  position: absolute;
+  inset: 0;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  background: linear-gradient(180deg, #fff3d6 0%, var(--ember-bright) 40%, var(--terracotta) 100%);
+  transform-origin: 50% 100%;
+  animation: flicker 2.6s ease-in-out infinite;
+  filter: drop-shadow(0 0 10px rgba(240, 182, 103, 0.85));
+}
+
+.flame-glow {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 130px;
+  height: 130px;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(240,182,103,0.55) 0%, rgba(240,182,103,0) 68%);
+  animation: glow-pulse 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.diya-base {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 96px;
+  height: 34px;
+  border-radius: 50% 50% 40% 40% / 60% 60% 40% 40%;
+  background: linear-gradient(180deg, #7a4a2a 0%, #4a2c18 100%);
+  box-shadow: 0 8px 22px rgba(0,0,0,0.5), inset 0 2px 4px rgba(255,255,255,0.12);
+}
+
+.diya-base::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 14px;
+  border-radius: 50%;
+  background: #2f1a0d;
+}
+
+@keyframes flicker {
+  0%, 100% { transform: translateX(-50%) scaleY(1) rotate(0deg); }
+  25%      { transform: translateX(-50%) scaleY(1.06) rotate(-2deg); }
+  50%      { transform: translateX(-50%) scaleY(0.95) rotate(1deg); }
+  75%      { transform: translateX(-50%) scaleY(1.04) rotate(-1deg); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.7; }
+  50%      { opacity: 1; }
+}
+
+.diya-button:hover .flame-glow,
+.diya-button:focus-visible .flame-glow {
+  animation-duration: 1.4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flame-core, .flame-glow { animation: none; }
+}
+
+/* ============ MAIN EXPERIENCE ============ */
+
+#experience {
+  position: relative;
+  z-index: 5;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ============ GLASS PANEL BASE ============ */
+
+.glass-panel {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  backdrop-filter: blur(16px) saturate(120%);
+  -webkit-backdrop-filter: blur(16px) saturate(120%);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+
+/* ============ ICON BUTTONS ============ */
+
+.icon-button {
+  appearance: none;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--ivory);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.icon-button:hover { background: rgba(201,138,62,0.22); }
+.icon-button:active { transform: scale(0.94); }
+.icon-button.small { width: 32px; height: 32px; }
+
+#settings-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+}
+
+/* ============ SETTINGS PANEL ============ */
+
+#settings-panel {
+  position: fixed;
+  top: 72px;
+  right: 20px;
+  z-index: 20;
+  width: min(300px, 84vw);
+  padding: 18px 18px 20px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.panel-header h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin: 0;
+  color: var(--ivory);
+}
+
+.setting-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+  font-size: 0.85rem;
+}
+
+.setting-row label {
+  color: var(--smoke);
+}
+
+.setting-row input[type="range"] {
+  width: 100%;
+}
+
+.setting-val {
+  align-self: flex-end;
+  font-size: 0.75rem;
+  color: var(--ember-bright);
+}
+
+.toggle-row {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.toggle-switch {
+  appearance: none;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.08);
+  width: 42px;
+  height: 24px;
+  border-radius: 999px;
+  position: relative;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: background 0.25s ease;
+}
+
+.toggle-switch[aria-checked="true"] {
+  background: var(--ember);
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ivory);
+  transition: transform 0.25s ease;
+}
+
+.toggle-switch[aria-checked="true"] .toggle-knob {
+  transform: translateX(18px);
+}
+
+/* Range input styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--ember-bright);
+  cursor: pointer;
+  border: 2px solid rgba(20,18,16,0.6);
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--ember-bright);
+  cursor: pointer;
+  border: 2px solid rgba(20,18,16,0.6);
+}
+
+/* ============ TOAST ============ */
+
+#toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  z-index: 60;
+  background: rgba(20,18,16,0.85);
+  border: 1px solid var(--glass-border);
+  color: var(--ivory);
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  max-width: 90vw;
+  text-align: center;
+}
+
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============ MUSIC PLAYER ============ */
+
+#music-player {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 15;
+  width: 280px;
+  padding: 18px 20px 16px;
+}
+
+.player-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.player-note {
+  color: var(--ember-bright);
+  font-size: 1rem;
+}
+
+.player-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--smoke);
+}
+
+.song-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--ivory);
+  margin: 2px 0 14px;
+  min-height: 1.6rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  margin-bottom: 14px;
+}
+
+.control-btn {
+  appearance: none;
+  border: 1px solid var(--glass-border);
+  background: rgba(255,255,255,0.05);
+  color: var(--ivory);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+
+.control-btn:hover { background: rgba(201,138,62,0.22); }
+.control-btn:active { transform: scale(0.92); }
+
+.control-btn.primary {
+  width: 50px;
+  height: 50px;
+  background: var(--ember);
+  border-color: transparent;
+  color: #201408;
+  box-shadow: 0 6px 18px rgba(201,138,62,0.4);
+}
+
+.control-btn.primary:hover { background: var(--ember-bright); }
+
+.volume-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.volume-row input[type="range"] { flex: 1; }
+
+.text-link {
+  appearance: none;
+  border: none;
+  background: transparent;
+  color: var(--smoke);
+  font-size: 0.78rem;
+  letter-spacing: 0.03em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.text-link:hover { color: var(--ember-bright); }
+
+#playlist {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 6px 0 0;
+  border-top: 1px solid var(--glass-border);
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+#playlist li {
+  padding: 0;
+}
+
+#playlist button {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  border: none;
+  background: transparent;
+  color: var(--smoke);
+  font-family: 'Assistant', sans-serif;
+  font-size: 0.88rem;
+  padding: 8px 6px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+#playlist button:hover { background: rgba(255,255,255,0.06); color: var(--ivory); }
+
+#playlist button[aria-selected="true"] {
+  color: var(--ember-bright);
+  font-weight: 600;
+}
+
+/* ============ RESPONSIVE ============ */
+
+@media (max-width: 767px) {
+  #music-player {
+    left: 50%;
+    right: auto;
+    bottom: 16px;
+    transform: translateX(-50%);
+    width: min(320px, 92vw);
+    padding: 14px 16px 12px;
+  }
+
+  #settings-panel {
+    top: 68px;
+    right: 12px;
+    width: min(280px, 88vw);
+  }
+
+  #settings-toggle { top: 14px; right: 14px; }
+
+  .song-name { font-size: 1.15rem; }
+}
+
+@media (max-width: 400px) {
+  .player-controls { gap: 12px; }
+  .control-btn { width: 36px; height: 36px; }
+  .control-btn.primary { width: 46px; height: 46px; }
+}
+
+/* Landscape mobile: keep panels from overlapping short viewports */
+@media (max-height: 480px) and (orientation: landscape) {
+  #music-player { bottom: 10px; padding: 10px 16px; }
+  .song-name { margin-bottom: 8px; }
+  .player-controls { margin-bottom: 8px; }
+  #settings-panel { top: 60px; max-height: 80vh; overflow-y: auto; }
+}
+
+
+.icon-hidden {
+  display: none !important;
+}

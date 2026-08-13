@@ -1,0 +1,14 @@
+{
+  "name": "sandhya",
+  "version": "1.0.0",
+  "description": "A cinematic, ambient evening in an old Indian village — full-screen background, custom music player, and an automatic ambient sound system.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
