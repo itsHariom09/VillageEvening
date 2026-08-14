@@ -42,7 +42,7 @@
 
     // Random gap between ambient sounds, in seconds [min, max].
     // Feel free to change this to e.g. [45, 90] or [60, 120].
-    ambientIntervalRangeSec: [30, 60],
+    ambientIntervalRangeSec: [30, 45,60],
 
     // Ambient sounds are capped in duration so they stay "one-shot"-ish even
     // if the source file is long; set to null to let a clip play in full.
